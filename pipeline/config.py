@@ -1,22 +1,23 @@
 import os
 from dotenv import load_dotenv
-from pathlib  import Path
+from pathlib import Path
 
 load_dotenv()
 
 # base path directory
 BASE_DIR=Path(__file__).resolve().parent.parent
 
+# call local data source path from .env
 data_dir = os.getenv("DATA_DIR")
 
 if not data_dir:
-    raise ValueError("DATA_DIR environement variable is required")
+    raise ValueError("DATA_DIR environment variable is required")
 
-LOCAL_DATA_DIR = Path(data_dir)
+LOCAL_DATA_PATH = Path(data_dir)
 
-if not LOCAL_DATA_DIR.exists():
+if not LOCAL_DATA_PATH.exists():
     raise FileNotFoundError(
-        f"DATA_DIR does not exist:{LOCAL_DATA_DIR}"
+        f"DATA_DIR does not exist:{LOCAL_DATA_PATH}"
     )
 
 
@@ -48,7 +49,7 @@ DATABASE_URL=f"postgresql://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONF
 
 if __name__ == "__main__":
     print("Configuration loaded successfully")
-    print(f"Local Data Directory : {LOCAL_DATA_DIR}")
+    print(f"Local Data Path : {LOCAL_DATA_PATH}")
     print(f"Parquet Directory: {PARQUET_DIR}")
     print(f"Database Host   : {DB_CONFIG['host']}")
     print(f"Database Name   : {DB_CONFIG['dbname']}")

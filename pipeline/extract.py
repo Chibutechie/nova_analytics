@@ -1,12 +1,12 @@
 import pandas as pd
 from pathlib import Path
 import pyarrow as pa
-from config import LOCAL_DATA_DIR, PARQUET_DIR
+from config import LOCAL_DATA_PATH, PARQUET_DIR
 
 
 def get_all_csvs() -> list[Path]:
     """Return all CSV files found recursively under LOCAL_DATA_PATH."""
-    return list(LOCAL_DATA_DIR.rglob("*.csv"))
+    return list(LOCAL_DATA_PATH.rglob("*.csv"))
 
 
 def read_csv(filepath: Path) -> pd.DataFrame:
