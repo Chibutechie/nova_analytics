@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: fct_customer_revenue
+    description: "Mart table aggregating revenue and transaction metrics at the customer level"
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_discount_impact
+    description: "Mart table analyzing the impact of discounts by year, month, region, category, and discount band"
+    columns:
+      - name: order_year
+        data_tests:
+          - not_null
+      - name: order_month
+        data_tests:
+          - not_null
+      - name: region
+        data_tests:
+          - not_null
+      - name: category
+        data_tests:
+          - not_null
+      - name: discount_band
+        data_tests:
+          - not_null
+
+  - name: fct_returns
+    description: "Mart table isolating returned transactions"
+    columns:
+      - name: transaction_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_revenue
+    description: "Mart table detailing individual sales transactions"
+    columns:
+      - name: transaction_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_revenue_monthly
+    description: "Mart table aggregating revenue and transaction metrics by month, region, and category"
+    columns:
+      - name: order_year
+        data_tests:
+          - not_null
+      - name: order_month
+        data_tests:
+          - not_null
+      - name: region
+        data_tests:
+          - not_null
+      - name: category
+        data_tests:
+          - not_null

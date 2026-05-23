@@ -1,0 +1,27 @@
+select
+    s.transaction_id,
+    s.order_date,
+    s.order_year,
+    s.order_month,
+    s.customer_id,
+    s.product_id,
+    s.store_id,
+    s.category,
+    s.sub_category,
+    s.tier,
+    s.region,
+    s.country,
+    s.store_type,
+    s.discount_band,
+    s.quantity,
+    s.revenue_gross,
+    s.revenue_net,
+    s.cogs,
+    s.gross_profit,
+    s.gross_profit_margin,
+    s.ship_cost,
+    s.revenue_lost_to_discount,
+    s.is_return,
+    s.days_to_return
+
+from {{ ref('int_sales') }} s
