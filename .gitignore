@@ -1,2 +1,5 @@
 .env
 __pycache__/
+tests/
+pipeline/tests/
+__tests__/
