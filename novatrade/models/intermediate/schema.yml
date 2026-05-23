@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: int_customer
+    description: "Intermediate model for customers with tenure bands"
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: int_products
+    description: "Intermediate model for products with tier ranking"
+    columns:
+      - name: product_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: int_sales
+    description: "Intermediate model for sales with revenue, cogs, and profit calculations"
+    columns:
+      - name: transaction_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: int_returns
+    description: "Intermediate model for returned sales"
+    columns:
+      - name: transaction_id
+        data_tests:
+          - unique
+          - not_null
