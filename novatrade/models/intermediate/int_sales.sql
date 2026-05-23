@@ -49,8 +49,8 @@ select
         when s.discount = 0         then 'No Discount'
         when s.discount <= 0.10     then 'Low'
         when s.discount <= 0.25     then 'Moderate'
-        else                             'Heavy'
-    end                                                                   as discount_band,
+        else   'Heavy'
+    end    as discount_band,
 
     round(
         (
