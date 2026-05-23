@@ -43,7 +43,7 @@ select
             )
         ),
         4
-    )                                                                    as gross_profit_margin,
+    )      as gross_profit_margin,
 
     case
         when s.discount = 0         then 'No Discount'
@@ -58,19 +58,21 @@ select
             - (s.unit_price * s.quantity * (1 - s.discount::numeric))
         )::numeric,
         2
-    )                                                                    as revenue_lost_to_discount,
+    )   as revenue_lost_to_discount,
 
     case
         when s.return_flag = 1 then true else false
-    end                                                                   as is_return,
+    end  as is_return,
 
     case
         when s.return_flag = 1 then s.return_date - s.order_date
-    end                                                                   as days_to_return,
+    end   as days_to_return,
 
-    extract(year  from s.order_date)::int                                 as order_year,
-    extract(month from s.order_date)::int                                 as order_month
+    extract(year  from s.order_date)::int   as order_year,
+    extract(month from s.order_date)::int   as order_month
 
 from {{ ref('stg_sales') }} s
-left join {{ ref('stg_products') }} p  on s.product_id = p.product_id
-left join {{ ref('stg_stores') }}  st  on s.store_id   = st.store_id
+left join {{ ref('stg_products') }} p  
+    on s.product_id = p.product_id
+left join {{ ref('stg_stores') }}  st  
+    on s.store_id   = st.store_id
