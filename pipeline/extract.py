@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import pyarrow as pa
+# pyrefly: ignore [missing-import]
 from config import LOCAL_DATA_PATH, PARQUET_DIR
 
 

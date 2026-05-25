@@ -1,6 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
 from pathlib import Path
+# pyrefly: ignore [missing-import]
 from config import PARQUET_DIR, DATABASE_URL
 
 
