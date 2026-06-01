@@ -35,6 +35,7 @@ def load_all_parquets(schema: str = "public"):
 
         try:  # ← indented inside the for loop
             df = pd.read_parquet(parquet_file)
+            df['loaded_at'] = pd.Timestamp.now()
 
             df.to_sql(
                 name=table_name,
