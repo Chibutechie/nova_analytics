@@ -17,8 +17,7 @@ select
     round(sum(revenue_lost_to_discount)::numeric, 2)                  as revenue_lost_to_discount,
 
     sum(case when is_return then 1 else 0 end)                        as total_returns,
-    round(sum(case when is_return then 1 else 0 end)
-        / nullif(count(*), 0)::numeric, 4)                            as return_rate
+    round(sum(case when is_return then 1 else 0 end) / nullif(count(*), 0)::numeric, 4)      as return_rate
 
 from {{ ref('int_sales') }}
 

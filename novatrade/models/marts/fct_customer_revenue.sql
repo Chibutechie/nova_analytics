@@ -17,6 +17,9 @@ select
 
     round(sum(s.revenue_net) / nullif(count(distinct s.transaction_id), 0)::numeric, 2)    as avg_order_value,
 
+    round(sum(case when is_return then 1 else 0 end) / nullif(count(*), 0)::numeric, 4)      as return_rate,
+
+
     round(sum(s.gross_profit) / nullif(sum(s.revenue_net), 0)::numeric, 4)  as gross_profit_margin,
 
     sum(case when s.is_return then 1 else 0 end)    as total_returns,
