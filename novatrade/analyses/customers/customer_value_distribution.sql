@@ -7,13 +7,9 @@ select
     round(avg(avg_order_value)::numeric, 2)                           as avg_order_value,
     round(avg(return_rate)::numeric, 4)                               as avg_return_rate,
 
-    -- revenue concentration
-    round(sum(revenue_net)
-        / sum(sum(revenue_net)) over ()::numeric, 4)                  as pct_of_total_revenue,
-
-    -- customer concentration
-    round(count(distinct customer_id)
-        / sum(count(distinct customer_id)) over ()::numeric, 4)       as pct_of_total_customers
+    round(sum(revenue_net)/ sum(sum(revenue_net)) over ()::numeric, 4)                  as pct_of_total_revenue,
+ 
+    round(count(distinct customer_id) / sum(count(distinct customer_id)) over ()::numeric, 4)       as pct_of_total_customers
 
 from {{ ref('fct_customer_revenue') }}
 
