@@ -27,13 +27,14 @@ def load_all_parquets(schema: str = "public"):
     parquet_files = list(parquet_dir.glob("*.parquet"))
 
     if not parquet_files:
-        print(f"⚠ No .parquet files found in {parquet_dir}")
+        print(f"No .parquet files found in {parquet_dir}")
         return
-
+    
     for parquet_file in parquet_files:
         table_name = parquet_file.stem.lower().replace(" ", "_")
-        try:
-            df = pd.read_parquet(parquet_file, engine="pyarrow")
+
+        try:  # ← indented inside the for loop
+            df = pd.read_parquet(parquet_file)
 
             df.to_sql(
                 name=table_name,
@@ -44,12 +45,10 @@ def load_all_parquets(schema: str = "public"):
                 chunksize=5000,
             )
 
-            print(f"✔ Loaded '{table_name}' ({len(df):,} rows) → {schema}.{table_name}")
+            print(f"Loaded '{table_name}' ({len(df):,} rows) → {schema}.{table_name}")
 
         except Exception as e:
             print(f"Failed to load '{table_name}': {e}")
-            continue
-
     print("\n Done.")
 
 
