@@ -16,12 +16,13 @@ if not data_dir:
 LOCAL_DATA_PATH = Path(data_dir)
 
 if not LOCAL_DATA_PATH.exists():
-    raise FileNotFoundError(
-        f"DATA_DIR does not exist:{LOCAL_DATA_PATH}"
-    )
+    raise FileNotFoundError(f"DATA_DIR does not exist: {LOCAL_DATA_PATH}")
 
 # --- Internal project directories ---
 PARQUET_DIR = BASE_DIR / "data" / "parquet"
+
+if not PARQUET_DIR.exists():
+    raise FileNotFoundError(f"PARQUET_DIR does not exist: {PARQUET_DIR}")
 
 # --- Database credentials ---
 DB_CONFIG = {
@@ -32,17 +33,22 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD"),
 }
 
-missing_vars = [key for key, value in DB_CONFIG.items() if value is None]
+missing_vars = [key for key, value in DB_CONFIG.items() if not value]
 
 if missing_vars:
     raise ValueError(f"Missing database environment variables: {missing_vars}")
+
+try:
+    db_port = int(DB_CONFIG["port"])
+except (TypeError, ValueError):
+    raise ValueError(f"DB_PORT must be a valid integer, got: {DB_CONFIG['port']!r}")
 
 DATABASE_URL = URL.create(
     drivername="postgresql+psycopg2",
     host=DB_CONFIG["host"],
     username=DB_CONFIG["username"],
     database=DB_CONFIG["database"],
-    port=int(DB_CONFIG["port"]),
+    port=db_port,
     password=DB_CONFIG["password"],
 )
 
