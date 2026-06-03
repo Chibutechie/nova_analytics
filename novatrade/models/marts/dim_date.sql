@@ -58,7 +58,7 @@ final as (
 
         date_trunc('quarter', date_day)::date                   as first_day_of_quarter,
 
-        to_char(date_day, 'YYYYMMDD')::int                      as date_key   -- surrogate key
+        to_char(date_day, 'YYYYMMDD')::int                      as date_key 
 
 
 

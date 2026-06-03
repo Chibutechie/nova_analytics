@@ -72,7 +72,7 @@ select
     extract(month from s.order_date)::int   as order_month
 
 from {{ ref('stg_sales') }} s
-left join {{ ref('stg_products') }} p  
+left join {{ ref('int_products') }} p  
     on s.product_id = p.product_id
 left join {{ ref('stg_stores') }}  st  
     on s.store_id   = st.store_id

@@ -14,7 +14,7 @@ CASE
     WHEN "City" = 'Australia City 2' THEN 'Melbourne'
     WHEN "City" = 'Australia City 9' THEN 'Brisbane'
     WHEN "City" = 'Australia City 10' THEN 'Perth'
-
+ 
     -- Canada
     WHEN "City" = 'Canada City 10' THEN 'Toronto'
     WHEN "City" = 'Canada City 16' THEN 'Vancouver'
