@@ -37,11 +37,15 @@ def load_all_parquets(schema: str = "public"):
             df = pd.read_parquet(parquet_file)
             df['loaded_at'] = pd.Timestamp.now()
 
+            with engine.connect() as conn:
+                conn.execute(text(f'DROP TABLE IF EXISTS "{schema}"."{table_name}" CASCADE'))
+                conn.commit()
+
             df.to_sql(
                 name=table_name,
                 con=engine,
                 schema=schema,
-                if_exists="replace",
+                if_exists="append",
                 index=False,
                 chunksize=5000,
             )
@@ -54,5 +58,7 @@ def load_all_parquets(schema: str = "public"):
 
 
 if __name__ == "__main__":
-    load_all_parquets()
+    import sys
+    schema = sys.argv[1] if len(sys.argv) > 1 else "public"
+    load_all_parquets(schema)
     
