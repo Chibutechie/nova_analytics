@@ -1,3 +1,3 @@
 select product_id
-from {{ ref('products_int') }}
+from {{ ref('int_products') }}
 where cost_price >= unit_price
