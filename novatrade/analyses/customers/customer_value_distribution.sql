@@ -11,7 +11,7 @@ select
  
     round(count(distinct customer_id) / sum(count(distinct customer_id)) over ()::numeric, 4)       as pct_of_total_customers
 
-from {{ ref('fct_customer_revenue') }}
+from {{ ref('dim_customer_revenue') }}
 
 group by customer_value_tier
 order by total_revenue desc
