@@ -25,25 +25,12 @@ select
     round((s.unit_price * s.quantity)::numeric, 2)                       as revenue_gross,
     round((s.unit_price * s.quantity * (1 - s.discount::numeric))::numeric, 2) as revenue_net,
 
-    round((p.cost_price * s.quantity)::numeric, 2)                       as cogs,
-    round(
-        (
-            ((s.unit_price * (1 - s.discount::numeric)) - p.cost_price)
-            * s.quantity
-        )::numeric,
-        2
-    )                                                                    as gross_profit,
+    round((p.cost_price * s.quantity)::numeric, 2)    as cogs,
+    round(( ((s.unit_price * (1 - s.discount::numeric)) - p.cost_price)  * s.quantity )::numeric, 2) as gross_profit,
 
-    round(
-        (
-            1::numeric
-            - (
-                p.cost_price
-                / nullif((s.unit_price * (1 - s.discount::numeric))::numeric, 0)
-            )
-        ),
-        4
-    )      as gross_profit_margin,
+    round((1::numeric - (
+    (p.cost_price * s.quantity) / 
+    nullif((s.unit_price * s.quantity * (1 - s.discount::numeric))::numeric, 0))), 4) as gross_profit_margin,
 
     case
         when s.discount = 0         then 'No Discount'
@@ -76,3 +63,5 @@ left join {{ ref('int_products') }} p
     on s.product_id = p.product_id
 left join {{ ref('stg_stores') }}  st  
     on s.store_id   = st.store_id
+
+order by revenue_net desc

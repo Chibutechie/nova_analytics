@@ -66,3 +66,18 @@ Runtime Error
 [0m11:48:25.177412 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000196CE5362C0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000196CE6EAE70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000196CE4739B0>]}
 [0m11:48:25.178077 [debug] [MainThread]: Flushing usage events
 [0m11:48:28.547114 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m18:08:21.104689 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020117C91160>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020118E0FED0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020118E0FB10>]}
+
+
+============================== 18:08:21.112901 | 6292f5ca-8dbb-43a8-9cde-86f1419b77df ==============================
+[0m18:08:21.112901 [info ] [MainThread]: Running with dbt=1.11.6
+[0m18:08:21.113937 [debug] [MainThread]: running dbt with arguments {'write_json': 'True', 'no_print': 'None', 'profiles_dir': 'C:\\Users\\LENOVO\\.dbt', 'cache_selected_only': 'False', 'use_colors': 'True', 'warn_error': 'None', 'indirect_selection': 'eager', 'fail_fast': 'False', 'log_path': 'logs', 'send_anonymous_usage_stats': 'True', 'partial_parse': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True', 'use_experimental_parser': 'False', 'version_check': 'True', 'introspect': 'True', 'quiet': 'False', 'empty': 'None', 'log_cache_events': 'False', 'debug': 'False', 'log_format': 'default', 'invocation_command': 'dbt source freshness', 'printer_width': '80', 'target_path': 'None'}
+[0m18:08:21.114892 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path C:\Users\LENOVO\.projects\novatrade_analytics\dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m18:08:21.116491 [debug] [MainThread]: Command `dbt source freshness` failed at 18:08:21.116256 after 0.21 seconds
+[0m18:08:21.117111 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020118E0A650>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020118CEE9F0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000020118C8E250>]}
+[0m18:08:21.117707 [debug] [MainThread]: Flushing usage events
+[0m18:08:22.709439 [debug] [MainThread]: An error was encountered while trying to flush usage events

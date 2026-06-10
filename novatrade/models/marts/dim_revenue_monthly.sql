@@ -11,8 +11,7 @@ select
     round(sum(revenue_net)::numeric, 2)                               as revenue_net,
     round(sum(cogs)::numeric, 2)                                      as total_cogs,
     round(sum(gross_profit)::numeric, 2)                              as gross_profit,
-    round(sum(gross_profit)
-        / nullif(sum(revenue_net), 0)::numeric, 4)                    as gross_profit_margin,
+    round((1::numeric - (sum(cogs) / nullif(sum(revenue_net)::numeric, 0))), 4) as gross_profit_margin,
     round(sum(ship_cost)::numeric, 2)                                 as total_ship_cost,
     round(sum(revenue_lost_to_discount)::numeric, 2)                  as revenue_lost_to_discount,
 

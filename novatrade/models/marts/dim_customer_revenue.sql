@@ -24,13 +24,12 @@ select
 
     sum(case when s.is_return then 1 else 0 end)    as total_returns,
 
-    case
-        when sum(s.revenue_net) > 3000 then 'Platinum'
-        when sum(s.revenue_net) > 1000 then 'Gold'
-        when sum(s.revenue_net) > 500 then 'Silver'
-        when sum(s.revenue_net) > 300 then 'Bronze'
-    else                                    'Prospect'
-    end as customer_value_tier
+case
+    when sum(s.revenue_net) > 25000 then 'Platinum' 
+    when sum(s.revenue_net) > 10000 then 'Gold'
+    when sum(s.revenue_net) >  3000 then 'Silver'
+    else 'Bronze'
+end as customer_value_tier
 
     from {{ ref('int_customer') }} c
 

@@ -10,7 +10,7 @@ select
     round(sum(revenue_net)::numeric, 2)      as revenue_net,
     round(sum(revenue_lost_to_discount)::numeric, 2)    as revenue_lost_to_discount,
     round(sum(gross_profit)::numeric, 2)  as gross_profit,
-    round(sum(gross_profit)/ nullif(sum(revenue_net), 0)::numeric, 4)   as gross_profit_margin,
+    round((1::numeric - (sum(cogs) / nullif(sum(revenue_net)::numeric, 0))), 4) as gross_profit_margin,
     round(avg(discount)::numeric, 4)   as avg_discount_pct
 
 from {{ ref('int_sales') }}

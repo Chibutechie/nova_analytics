@@ -17,6 +17,7 @@ select
     s.cogs,
     s.gross_profit,
     s.days_to_return,
+
     
     case 
     when s.days_to_return <= 30 then 'within_return_window'
