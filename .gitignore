@@ -4,3 +4,4 @@ pipeline/tests/
 __tests__/
 logs/
 requirements.txt
+requirements-dev.txt
