@@ -5,3 +5,5 @@ __tests__/
 logs/
 requirements.txt
 requirements-dev.txt
+.vscode
+
