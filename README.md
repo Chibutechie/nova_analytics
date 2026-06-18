@@ -77,15 +77,15 @@ nova_analytics/
 │   │   │   ├── stg_sales.sql
 │   │   │   └── stg_stores.sql
 │   │   │
-│   │   ├── intermediate/                 # Business logic transformations
+│   │   ├── intermediate/              
 │   │   │   ├── schema.yml
 │   │   │   ├── int_customer.sql
 │   │   │   ├── int_products.sql
 │   │   │   └── int_sales.sql
 │   │   │
-│   │   └── marts/                        # Final models for BI consumption
+│   │   └── marts/                      
 │   │       ├── schema.yml
-│   │       ├── fct_revenue.sql           # Core revenue fact table
+│   │       ├── fct_revenue.sql          
 │   │       ├── dim_customer_revenue.sql
 │   │       ├── dim_date.sql
 │   │       ├── dim_discount_impact.sql
@@ -97,16 +97,16 @@ nova_analytics/
 │   │       └── customer_value_distribution.sql
 │   │
 │   ├── macros/
-│   │   └── generate_schema_name.sql      # Custom schema override macro
+│   │   └── generate_schema_name.sql     
 │   │
-│   ├── tests/                            # Custom singular tests
+│   ├── tests/                            
 │   │   ├── assert_discount_range.sql
 │   │   ├── cost_price_less_than_unit_price.sql
 │   │   ├── customer_order_check.sql
 │   │   └── no_negative_revenue.sql
 │   │
-│   ├── seeds/                            # Static reference data
-│   └── snapshots/                        # SCD snapshots (reserved)
+│   ├── seeds/                           
+│   └── snapshots/                        
 │
 ├── logs/
 │   └── dbt.log
@@ -118,10 +118,13 @@ nova_analytics/
 ---
 
 ## Data Flow
-The pipeline follows a particular pattern from local storage to BI reporting. 
+The pipeline follows a particular pattern from source to BI reporting. 
 - **Extraction:** The data is extracted from the local machine using python-pandas library.
 - **Conversion:** The files are then converted from CSV to Parquet, and then saved on the local machine.
 - **Load:** Converted files are then loaded into Postgres as raw data.
 - **Transformation:** dbt connects to the loaded data in Postgres for transformation and modeling.
 
+#### Low-level DAG Pipeline Diagram
 <img width="913" height="409" alt="image" src="https://github.com/user-attachments/assets/cfc3e3ea-77ad-49cd-adae-b8bf708fe7ea" />
+
+---
