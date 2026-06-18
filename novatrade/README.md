@@ -1,4 +1,4 @@
-# NovaTrade dbt Project
+# DBT Structure
 
 ## Overview
 
