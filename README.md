@@ -282,9 +282,9 @@ pip install -r requirements.txt
 Copy `.env.example` to `.env` and fill in your credentials:
 
 ```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=novatrade
+DB_HOST=your_localhost
+DB_PORT=your_port
+DB_NAME=your_dbname
 DB_USER=postgres
 DB_PASSWORD=your_password
 LOCAL_DATA_PATH=C:\Users\LENOVO\OneDrive\Documents\novatrade
@@ -333,6 +333,8 @@ Open `BI Report/NTG.pbix` in Power BI Desktop and update the PostgreSQL connecti
 ---
 
 ## Dashboard
+
+![alt text](image.png)
 
 The Power BI report (`NTG.pbix`) is structured across four pages:
 
