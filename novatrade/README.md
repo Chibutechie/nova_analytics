@@ -144,9 +144,7 @@ dbt docs serve
 
 ## Lineage Graph
 
-![alt text](image.png)
-
-`![dbt Lineage Graph](path/to/lineage-graph.png)`
+![dbt Lineage Graph](image/lineage-graph.png)
 
 > Replace the image path above with the actual diagram file or the exported graph link.
 
