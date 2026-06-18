@@ -144,7 +144,7 @@ dbt docs serve
 
 ## Lineage Graph
 
-![dbt Lineage Graph](image/lineage-graph.png)
+![dbt Lineage Graph](../images/lineage-graph.png)
 
 ## Resources
 
