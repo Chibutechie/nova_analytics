@@ -1,4 +1,4 @@
-# NovaTrade Group — Analytics Engineering Projec
+# NovaTrade Group — Analytics Engineering Pipeline
 
 ## Navigation
 
@@ -12,7 +12,7 @@ Quickly move to the session you want.
 - [Project Structure](#project-structure)
 - [Architecture Flow](#architecture-flow)
 - [How It Works](#how-it-works)
-- [Dataset Schema](#dataset-schema)
+- [Source Dataset](#source-dataset)
 - [Technologies](#technologies)
 - [Setup Instructions](#setup-instructions)
 - [Dashboard](#dashboard)
