@@ -97,8 +97,6 @@ Handles CSV to Parquet conversion. For each CSV path returned by `extract.py`:
 
 Parquet was chosen over loading CSV directly because it enforces column types on write, compresses well, and reads back significantly faster — especially as file sizes grow.
 
-> `data/parquet/` is gitignored. It is a temporary intermediate regenerated on every pipeline run and should never be committed to version control.
-
 ---
 
 ## Loading — `load.py`
@@ -118,8 +116,6 @@ Handles loading Parquet files into PostgreSQL. Three responsibilities:
 | Chunk size    | 5,000 rows per batch                                  |
 | Table naming  | Filename lowercased, spaces replaced with underscores |
 | Adapter       | `psycopg2-binary` via SQLAlchemy                      |
-
-> The `replace` strategy drops and recreates each table on every run, guaranteeing the raw layer always reflects the source files exactly. Switch to `append` when moving to incremental loads.
 
 ---
 
@@ -152,14 +148,14 @@ Console output per file:
 Found 4 CSV file(s). Starting pipeline...
 
 ── Processing: sales.csv
-  ✔ Converted: sales.csv → sales.parquet (50,000 rows)
-  ✔ Loaded: ntg_sales → raw.ntg_sales (50,000 rows)
+  Converted: sales.csv → sales.parquet (50,000 rows)
+  Loaded: ntg_sales → raw.ntg_sales (50,000 rows)
 
 ── Processing: customers.csv
-  ✔ Converted: customers.csv → customers.parquet (8,200 rows)
-  ✔ Loaded: ntg_customers → raw.ntg_customers (8,200 rows)
+  Converted: customers.csv → customers.parquet (8,200 rows)
+  Loaded: ntg_customers → raw.ntg_customers (8,200 rows)
 
-✅ Pipeline complete.
+Pipeline complete.
 ```
 
 ---
