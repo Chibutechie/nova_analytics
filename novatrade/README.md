@@ -146,8 +146,6 @@ dbt docs serve
 
 ![dbt Lineage Graph](image/lineage-graph.png)
 
-> Replace the image path above with the actual diagram file or the exported graph link.
-
 ## Resources
 
 - [dbt documentation](https://docs.getdbt.com/docs/introduction)
