@@ -144,12 +144,12 @@ flowchart LR
     DBT --> PBI
 ```
 
-| Stage | Component | What Happens | Key Technologies |
-|---|---|---|---|
-| **1. Data Sources** | Local Storage | Raw business data (sales, customers, products, stores) stored as local CSV files. | CSV Files |
-| **2. Ingestion** | Python ETL | Reads CSV files, converts them to Parquet format for optimized columnar storage, and loads them into PostgreSQL. | Python, Pandas, PyArrow, SQLAlchemy |
-| **3. Warehouse & Transformation** | PostgreSQL & dbt | Houses the raw data, renames and cleanses it (Staging), enriches and joins it (Intermediate), and shapes it into a Reporting Star Schema (Marts). | PostgreSQL, dbt-core, dbt-postgres |
-| **4. Analytics & Reporting** | Power BI | Connects directly to the pre-computed dbt `marts` tables to render interactive dashboards and performance reports. | Power BI Desktop |
+| Stage                             | Component        | What Happens                                                                                                                                      | Key Technologies                    |
+| --------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| **1. Data Sources**               | Local Storage    | Raw business data (sales, customers, products, stores) stored as local CSV files.                                                                 | CSV Files                           |
+| **2. Ingestion**                  | Python ETL       | Reads CSV files, converts them to Parquet format for optimized columnar storage, and loads them into PostgreSQL.                                  | Python, Pandas, PyArrow, SQLAlchemy |
+| **3. Warehouse & Transformation** | PostgreSQL & dbt | Houses the raw data, renames and cleanses it (Staging), enriches and joins it (Intermediate), and shapes it into a Reporting Star Schema (Marts). | PostgreSQL, dbt-core, dbt-postgres  |
+| **4. Analytics & Reporting**      | Power BI         | Connects directly to the pre-computed dbt `marts` tables to render interactive dashboards and performance reports.                                | Power BI Desktop                    |
 
 ---
 
@@ -707,51 +707,19 @@ SELECT 'raw.ntg_stores', count(*) from raw.ntg_stores;"
 
 ---
 
-### 11. Connect Power BI
+### 11. Connect Power BI to PostgreSQL
 
-**Step A — Open the report**
+Power BI connects directly to the PostgreSQL database to retrieve pre-computed analytics tables from the `marts` schema. No additional data modelling is required — all business logic is pre-computed in dbt.
 
-Launch Power BI Desktop and open `BI Report/NTG.pbix` from the project root.
+**Connection steps:**
 
-**Step B — Update the connection**
+1. Open Power BI Desktop and create a blank report
+2. Click **Get Data → Database → PostgreSQL database**
+3. Connect using your server credentials (from your `.env` file)
+4. Load the data into Power Query Editor for any final type normalization
+5. Click **Close & Apply**
 
-1. If prompted with **"We found existing connections..."**, click **Edit** or **Continue**.
-2. Navigate to: **Home → Transform Data → Data source settings**.
-3. Select the PostgreSQL connection and click **Change Source**.
-4. Enter your database host, port, and database name (`novatrade`).
-5. Under **Database authentication**, select **Database** and enter your PostgreSQL username and password.
-6. Click **OK** and then **Close**.
-
-**Step C — Refresh the data**
-
-Go to **Home → Refresh** to pull the latest data from the `marts` schema into the report visuals.
-
-All four report pages draw from `marts` tables:
-
-| Page                  | Key Metrics                                                               |
-| --------------------- | ------------------------------------------------------------------------- |
-| Revenue Performance   | Total revenue, gross profit, net profit by year/quarter/month             |
-| Category & Region     | Revenue and margin by product category, sub-category, tier, and region    |
-| Customer Intelligence | Customer segmentation, loyalty tier, LTV, and channel performance         |
-| Operations            | Return rates, discount impact on margin, shipping cost, store performance |
-
-> No additional data modelling or transformations are needed inside Power BI — all business logic is pre-computed in the dbt `marts` layer.
-
----
-
-### Troubleshooting
-
-| Problem                                         | Likely Cause                                | Solution                                                                                                            |
-| ----------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `psql` is not recognized                        | PostgreSQL not installed or not in PATH     | Reinstall PostgreSQL and check "Add to PATH" during setup, or add `C:\Program Files\PostgreSQL\15\bin` to your PATH |
-| `pip` command not found                         | Python not in PATH                          | Reinstall Python and check "Add Python to PATH" during setup                                                        |
-| `dbt: command not found`                        | dbt not installed or venv not activated     | Run `pip install dbt-core dbt-postgres` and ensure your virtual environment is activated                            |
-| `FileNotFoundError: DATA_DIR does not exist`    | Wrong path in `.env`                        | Verify the folder exists and the path in `DATA_DIR` is correct (use absolute paths, forward slashes)                |
-| `relation "raw.ntg_sales" does not exist`       | Pipeline hasn't been run yet                | Run `python pipeline/main.py` first to load data into the `raw` schema                                              |
-| `column reference "category" is ambiguous`      | Unqualified column name in model            | Prefix the column with its table alias (e.g. `s.category`)                                                          |
-| `column "x" must appear in the GROUP BY clause` | Non-aggregated column in grouped query      | Wrap the column in an aggregate function or add it to `GROUP BY`                                                    |
-| `dbt debug` fails with connection error         | PostgreSQL not running or wrong credentials | Start the PostgreSQL service and verify credentials in `~/.dbt/profiles.yml`                                        |
-| Power BI shows authentication popup repeatedly  | Password not saved in data source settings  | Go to Data source settings → Edit permissions → Save the password                                                   |
+Once connected, Power BI will pull the latest data from the PostgreSQL `marts` schema and display all pre-computed analytics across four interactive dashboard pages.
 
 ---
 
@@ -759,13 +727,72 @@ All four report pages draw from `marts` tables:
 
 ![alt text](images/image.png)
 
-The Power BI report (`NTG.pbix`) is structured across four pages:
+**Report Structure:** The Power BI dashboard (`NTG.pbix`) is organized into four analytical pages:
 
-| Page                      | Description                                                                            |
-| ------------------------- | -------------------------------------------------------------------------------------- |
-| **Revenue Performance**   | Total revenue, gross profit, net profit trends by year, quarter, and month             |
-| **Category & Region**     | Revenue and margin breakdown by product category, sub-category, tier, and region       |
-| **Customer Intelligence** | Customer segmentation, loyalty tier distribution, LTV, and channel performance         |
-| **Operations**            | Return rates, discount impact on margin, shipping cost analysis, and store performance |
+| Page                      | Data Sources                                        | Key Insights                                                     |
+| ------------------------- | --------------------------------------------------- | ---------------------------------------------------------------- |
+| **Revenue Performance**   | `fct_revenue`, `dim_date`, `dim_revenue_monthly`    | Total revenue, gross profit, trends by year/quarter/month        |
+| **Category & Region**     | `fct_revenue`, `dim_discount_impact`, `dim_returns` | Revenue and margin by category, tier, and geography              |
+| **Customer Intelligence** | `dim_customer_revenue`, `dim_date`                  | Segmentation, loyalty, lifetime value, and channel performance   |
+| **Operations**            | `dim_returns`, `dim_discount_impact`, `fct_revenue` | Return rates, discount impact on margins, shipping cost analysis |
 
-All pages connect directly to the `marts` schema in PostgreSQL and require no manual data refresh configuration beyond the initial connection setup.
+All tables are live-connected to PostgreSQL, enabling real-time dashboards that reflect the latest transformed data.
+
+---
+
+## Quick Reference
+
+### Essential Commands
+
+```bash
+# Run the full ETL + dbt pipeline
+python pipeline/main.py
+
+# Run only data transformation (if data is already loaded)
+cd novatrade && dbt run
+
+# Validate data quality
+dbt test
+
+# Generate documentation and lineage graph
+dbt docs generate && dbt docs serve   # view at http://localhost:8080
+
+# Verify database objects
+psql -U postgres -d novatrade -c "\dn"   # list schemas
+```
+
+### File Locations
+
+| What                  | Where                         |
+| --------------------- | ----------------------------- |
+| Power BI Report       | `BI Report/NTG.pbix`          |
+| Python ETL Pipeline   | `pipeline/main.py`            |
+| dbt Project Root      | `novatrade/`                  |
+| dbt Model Definitions | `novatrade/models/`           |
+| Data Quality Tests    | `novatrade/tests/`            |
+| Raw Parquet Files     | `data/parquet/`               |
+| Configuration         | `.env`, `~/.dbt/profiles.yml` |
+
+---
+
+## Support & Troubleshooting
+
+Refer to the **Troubleshooting** section above for common issues and their solutions. For additional help:
+
+- **dbt Documentation:** [docs.getdbt.com](https://docs.getdbt.com/)
+- **PostgreSQL Guide:** [postgresql.org/docs](https://www.postgresql.org/docs/)
+- **Power BI Support:** [learn.microsoft.com/power-bi](https://learn.microsoft.com/power-bi/)
+
+---
+
+## Project Summary
+
+This analytics pipeline demonstrates end-to-end data engineering best practices:
+
+✓ **Extract & Load:** Python-based ETL automates data ingestion from CSV to PostgreSQL  
+✓ **Transform:** dbt orchestrates a three-layer transformation (Staging → Intermediate → Marts)  
+✓ **Test:** Automated data quality checks enforce business rules and data integrity  
+✓ **Document:** dbt generates lineage DAGs and data dictionaries automatically  
+✓ **Report:** Power BI consumes pre-computed analytics tables for interactive dashboards
+
+The modular architecture ensures scalability, maintainability, and separation of concerns across the data stack.
