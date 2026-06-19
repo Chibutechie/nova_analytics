@@ -120,40 +120,36 @@ nova_analytics/
 ## Architecture Flow
 
 ```mermaid
-flowchart TD
-    CSV[("💾 Local CSV Files")]
-    PIPE["🐍 Python Pipeline<br/>Extract → Convert → Load"]
-    RAW[("🗄️ PostgreSQL<br/><b>raw</b> schema")]
-    STG["<b>dbt staging</b><br/>Clean & Cast"]
-    INT["<b>dbt intermediate</b><br/>Enrich & Join"]
-    MARTS["<b>dbt marts</b><br/>Star Schema"]
-    BI["📊 Power BI Dashboard"]
+flowchart LR
+    subgraph SRC ["1. Data Sources"]
+        CSV["Local CSV Files"]
+    end
+
+    subgraph ING ["2. Ingestion"]
+        PIPE["Python ETL Pipeline (Extract ➔ Convert ➔ Load)"]
+    end
+
+    subgraph WH ["3. Warehouse & Transformation"]
+        RAW["PostgreSQL Raw Schema"]
+        DBT["dbt Modeling Layers (Staging ➔ Intermediate ➔ Marts)"]
+        RAW --> DBT
+    end
+
+    subgraph BI ["4. Analytics & Reporting"]
+        PBI["Power BI Dashboard"]
+    end
 
     CSV --> PIPE
     PIPE --> RAW
-    RAW --> STG
-    STG --> INT
-    INT --> MARTS
-    MARTS --> BI
-
-    style CSV fill:#f5f5f5,stroke:#666,stroke-width:2px,font-size:14px
-    style PIPE fill:#bbdefb,stroke:#1565c0,stroke-width:3px,font-size:14px
-    style RAW fill:#ffe0b2,stroke:#e65100,stroke-width:3px,font-size:14px
-    style STG fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px,font-size:14px
-    style INT fill:#e1bee7,stroke:#6a1b9a,stroke-width:3px,font-size:14px
-    style MARTS fill:#ffcdd2,stroke:#c62828,stroke-width:3px,font-size:14px
-    style BI fill:#fff9c4,stroke:#f9a825,stroke-width:3px,font-size:14px
+    DBT --> PBI
 ```
 
-| Stage | What Happens |
-|---|---|
-| **Source** | 4 CSV files stored locally |
-| **Pipeline** | Python reads CSVs, converts to Parquet, loads into PostgreSQL |
-| **Raw** | Data lands in the `raw` schema — untouched |
-| **Staging** | dbt cleans, casts types, renames columns — 1:1 with raw |
-| **Intermediate** | dbt joins staging models, derives business metrics |
-| **Marts** | dbt builds star schema — facts and dimensions ready for reporting |
-| **Reporting** | Power BI connects to `marts` and renders the dashboard |
+| Stage | Component | What Happens | Key Technologies |
+|---|---|---|---|
+| **1. Data Sources** | Local Storage | Raw business data (sales, customers, products, stores) stored as local CSV files. | CSV Files |
+| **2. Ingestion** | Python ETL | Reads CSV files, converts them to Parquet format for optimized columnar storage, and loads them into PostgreSQL. | Python, Pandas, PyArrow, SQLAlchemy |
+| **3. Warehouse & Transformation** | PostgreSQL & dbt | Houses the raw data, renames and cleanses it (Staging), enriches and joins it (Intermediate), and shapes it into a Reporting Star Schema (Marts). | PostgreSQL, dbt-core, dbt-postgres |
+| **4. Analytics & Reporting** | Power BI | Connects directly to the pre-computed dbt `marts` tables to render interactive dashboards and performance reports. | Power BI Desktop |
 
 ---
 
