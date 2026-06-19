@@ -119,85 +119,41 @@ nova_analytics/
 
 ## Architecture Flow
 
-The pipeline follows a four-stage ETL+T pattern: **Extract → Convert → Load → Transform**. Below is the end-to-end data flow from source CSV files to the Power BI dashboard.
-
 ```mermaid
-flowchart LR
-    subgraph Source["Source Layer"]
-        S1[NTG_Sales.csv]
-        S2[NTG_Customers.csv]
-        S3[NTG_Products.csv]
-        S4[NTG_Stores.csv]
-    end
+flowchart TD
+    CSV[("💾 Local CSV Files")]
+    PIPE["🐍 Python Pipeline<br/>Extract → Convert → Load"]
+    RAW[("🗄️ PostgreSQL<br/><b>raw</b> schema")]
+    STG["<b>dbt staging</b><br/>Clean & Cast"]
+    INT["<b>dbt intermediate</b><br/>Enrich & Join"]
+    MARTS["<b>dbt marts</b><br/>Star Schema"]
+    BI["📊 Power BI Dashboard"]
 
-    subgraph Pipeline["Python ETL Pipeline"]
-        direction TB
-        E[Extract<br/><i>pandas.read_csv</i>]
-        C[Convert<br/><i>CSV → Parquet</i>]
-        L[Load<br/><i>to_sql</i>]
-        E --> C --> L
-    end
+    CSV --> PIPE
+    PIPE --> RAW
+    RAW --> STG
+    STG --> INT
+    INT --> MARTS
+    MARTS --> BI
 
-    subgraph Raw["PostgreSQL — raw schema"]
-        R1[ntg_sales]
-        R2[ntg_customers]
-        R3[ntg_products]
-        R4[ntg_stores]
-    end
-
-    subgraph Staging["dbt — staging layer"]
-        V1[stg_sales]
-        V2[stg_customers]
-        V3[stg_products]
-        V4[stg_stores]
-    end
-
-    subgraph Intermediate["dbt — intermediate layer"]
-        I1[int_sales]
-        I2[int_products]
-        I3[int_customer]
-    end
-
-    subgraph Marts["dbt — marts layer"]
-        M1[fct_revenue]
-        M2[dim_customer_revenue]
-        M3[dim_date]
-        M4[dim_discount_impact]
-        M5[dim_returns]
-        M6[dim_revenue_monthly]
-    end
-
-    subgraph BI["Reporting Layer"]
-        PBI[Power BI Dashboard<br/><i>4 report pages</i>]
-    end
-
-    S1 & S2 & S3 & S4 --> Pipeline
-    Pipeline --> Raw
-    Raw --> Staging
-    Staging --> Intermediate
-    Intermediate --> Marts
-    Marts --> BI
-
-    style Source fill:#f9f9f9,stroke:#666,stroke-width:1px
-    style Pipeline fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
-    style Raw fill:#fff3e0,stroke:#e65100,stroke-width:1px
-    style Staging fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px
-    style Intermediate fill:#f3e5f5,stroke:#6a1b9a,stroke-width:1px
-    style Marts fill:#fce4ec,stroke:#c62828,stroke-width:1px
-    style BI fill:#fff8e1,stroke:#f9a825,stroke-width:2px
+    style CSV fill:#f5f5f5,stroke:#666,stroke-width:2px,font-size:14px
+    style PIPE fill:#bbdefb,stroke:#1565c0,stroke-width:3px,font-size:14px
+    style RAW fill:#ffe0b2,stroke:#e65100,stroke-width:3px,font-size:14px
+    style STG fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px,font-size:14px
+    style INT fill:#e1bee7,stroke:#6a1b9a,stroke-width:3px,font-size:14px
+    style MARTS fill:#ffcdd2,stroke:#c62828,stroke-width:3px,font-size:14px
+    style BI fill:#fff9c4,stroke:#f9a825,stroke-width:3px,font-size:14px
 ```
 
-### Stage Descriptions
-
-| Stage | Technology | Action | Output |
-|---|---|---|---|
-| **Extract** | Python / pandas | Read raw CSV files from local storage | Pandas DataFrames |
-| **Convert** | Python / PyArrow | Serialize DataFrames to compressed Parquet | `.parquet` files in `data/parquet/` |
-| **Load** | Python / SQLAlchemy | Bulk insert Parquet data into PostgreSQL | 4 tables in `raw` schema |
-| **Staging** | dbt / SQL | Clean, cast, rename — 1:1 with raw tables | 4 views in `staging` schema |
-| **Intermediate** | dbt / SQL | Join staging models, derive business metrics | 3 views in `intermediate` schema |
-| **Marts** | dbt / SQL | Build star schema facts and dimensions | 6 tables in `marts` schema |
-| **Reporting** | Power BI | Connect to `marts` schema and render visuals | 4-page interactive dashboard |
+| Stage | What Happens |
+|---|---|
+| **Source** | 4 CSV files stored locally |
+| **Pipeline** | Python reads CSVs, converts to Parquet, loads into PostgreSQL |
+| **Raw** | Data lands in the `raw` schema — untouched |
+| **Staging** | dbt cleans, casts types, renames columns — 1:1 with raw |
+| **Intermediate** | dbt joins staging models, derives business metrics |
+| **Marts** | dbt builds star schema — facts and dimensions ready for reporting |
+| **Reporting** | Power BI connects to `marts` and renders the dashboard |
 
 ---
 
