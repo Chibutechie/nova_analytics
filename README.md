@@ -245,35 +245,35 @@ All source files are read from the local machine path configured in `pipeline/co
 
 The staging layer mirrors each raw source table 1:1. Only cleaning, type casting, and column renaming — no business logic.
 
-| Table | Source | Key Transformations |
-|---|---|---|
-| `stg_sales` | `raw.ntg_sales` | Cast IDs to varchar, dates to date, amounts to numeric(10,2); normalise discount percentage to 0–1 range; derive `is_return` flag |
-| `stg_customers` | `raw.ntg_customers` | Cast IDs to varchar, dates to date; concatenate first/last name into `customer_name`; lowercase email |
-| `stg_products` | `raw.ntg_products` | Cast IDs to varchar, amounts to numeric(10,2); standardise category names |
-| `stg_stores` | `raw.ntg_stores` | Cast IDs to varchar, dates to date; map obfuscated city names to real city names per country |
+| Table           | Source              | Key Transformations                                                                                                               |
+| --------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `stg_sales`     | `raw.ntg_sales`     | Cast IDs to varchar, dates to date, amounts to numeric(10,2); normalise discount percentage to 0–1 range; derive `is_return` flag |
+| `stg_customers` | `raw.ntg_customers` | Cast IDs to varchar, dates to date; concatenate first/last name into `customer_name`; lowercase email                             |
+| `stg_products`  | `raw.ntg_products`  | Cast IDs to varchar, amounts to numeric(10,2); standardise category names                                                         |
+| `stg_stores`    | `raw.ntg_stores`    | Cast IDs to varchar, dates to date; map obfuscated city names to real city names per country                                      |
 
 ### Intermediate — `intermediate` schema
 
 Enriches staging models with derived fields and cross-model joins. These views keep the marts layer clean.
 
-| Table | Purpose |
-|---|---|
-| `int_sales` | Joins `stg_sales` + `stg_products` + `stg_stores`; derives `revenue_gross`, `revenue_net`, `cogs`, `gross_profit`, `gross_profit_margin`, `discount_band`, `revenue_lost_to_discount`, `is_return`, `order_year`, `order_month` |
-| `int_products` | Adds `tier_rank` (1–3) and `is_premium` flag |
-| `int_customer` | Adds `tenure_band` and `channel_type` (Online vs In-Store) |
+| Table          | Purpose                                                                                                                                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `int_sales`    | Joins `stg_sales` + `stg_products` + `stg_stores`; derives `revenue_gross`, `revenue_net`, `cogs`, `gross_profit`, `gross_profit_margin`, `discount_band`, `revenue_lost_to_discount`, `is_return`, `order_year`, `order_month` |
+| `int_products` | Adds `tier_rank` (1–3) and `is_premium` flag                                                                                                                                                                                    |
+| `int_customer` | Adds `tenure_band` and `channel_type` (Online vs In-Store)                                                                                                                                                                      |
 
 ### Marts — `marts` schema
 
 The final analytics layer — star schema consumed by Power BI. All metrics pre-computed.
 
-| Table | Type | Grain |
-|---|---|---|
-| `fct_revenue` | Fact | One row per transaction |
+| Table                  | Type      | Grain                                                       |
+| ---------------------- | --------- | ----------------------------------------------------------- |
+| `fct_revenue`          | Fact      | One row per transaction                                     |
 | `dim_customer_revenue` | Dimension | One row per customer with LTV, order count, avg order value |
-| `dim_date` | Dimension | One row per day (2022–2024) |
-| `dim_discount_impact` | Dimension | Discount band analysis |
-| `dim_returns` | Dimension | Return metrics by product and region |
-| `dim_revenue_monthly` | Dimension | Monthly aggregates by region, category |
+| `dim_date`             | Dimension | One row per day (2022–2024)                                 |
+| `dim_discount_impact`  | Dimension | Discount band analysis                                      |
+| `dim_returns`          | Dimension | Return metrics by product and region                        |
+| `dim_revenue_monthly`  | Dimension | Monthly aggregates by region, category                      |
 
 ## Technologies
 
@@ -297,13 +297,13 @@ The final analytics layer — star schema consumed by Power BI. All metrics pre-
 
 Before starting, ensure the following tools are installed on your machine. Click the links for download instructions if needed.
 
-| Tool | Minimum Version | Required For | Install Guide |
-|---|---|---|---|
-| Python | 3.9 | Running the ETL pipeline | [python.org](https://www.python.org/downloads/) |
-| PostgreSQL | 15 | Data warehouse | [postgresql.org](https://www.postgresql.org/download/) |
-| dbt-core + dbt-postgres | 1.8 | Data transformation models | Installed via `pip` (step 4) |
-| Power BI Desktop | Latest | Dashboard and reporting | [Microsoft Store](https://aka.ms/pbidesktopstore) |
-| Git | Latest | Cloning the repository | [git-scm.com](https://git-scm.com/downloads) |
+| Tool                    | Minimum Version | Required For               | Install Guide                                          |
+| ----------------------- | --------------- | -------------------------- | ------------------------------------------------------ |
+| Python                  | 3.9             | Running the ETL pipeline   | [python.org](https://www.python.org/downloads/)        |
+| PostgreSQL              | 15              | Data warehouse             | [postgresql.org](https://www.postgresql.org/download/) |
+| dbt-core + dbt-postgres | 1.8             | Data transformation models | Installed via `pip` (step 4)                           |
+| Power BI Desktop        | Latest          | Dashboard and reporting    | [Microsoft Store](https://aka.ms/pbidesktopstore)      |
+| Git                     | Latest          | Cloning the repository     | [git-scm.com](https://git-scm.com/downloads)           |
 
 Verify your installations:
 
@@ -370,12 +370,12 @@ python -m venv .venv
 
 Activate the environment:
 
-| Platform | Command |
-|---|---|
-| Windows (CMD) | `.venv\Scripts\activate` |
-| Windows (PowerShell) | `.venv\Scripts\Activate.ps1` |
-| Windows (Git Bash) | `source .venv/Scripts/activate` |
-| macOS / Linux | `source .venv/bin/activate` |
+| Platform             | Command                         |
+| -------------------- | ------------------------------- |
+| Windows (CMD)        | `.venv\Scripts\activate`        |
+| Windows (PowerShell) | `.venv\Scripts\Activate.ps1`    |
+| Windows (Git Bash)   | `source .venv/Scripts/activate` |
+| macOS / Linux        | `source .venv/bin/activate`     |
 
 After activation, your terminal prompt should show `(.venv)` at the beginning.
 
@@ -389,15 +389,15 @@ pip install -r requirements.txt
 
 This installs all packages listed below:
 
-| Package | Purpose |
-|---|---|
-| `pandas` | Reading CSVs into DataFrames |
-| `pyarrow` | Parquet conversion engine |
-| `sqlalchemy` | Database connectivity |
+| Package           | Purpose                           |
+| ----------------- | --------------------------------- |
+| `pandas`          | Reading CSVs into DataFrames      |
+| `pyarrow`         | Parquet conversion engine         |
+| `sqlalchemy`      | Database connectivity             |
 | `psycopg2-binary` | PostgreSQL adapter for SQLAlchemy |
-| `python-dotenv` | Loading `.env` credentials |
-| `dbt-core` | Transformation framework |
-| `dbt-postgres` | PostgreSQL adapter for dbt |
+| `python-dotenv`   | Loading `.env` credentials        |
+| `dbt-core`        | Transformation framework          |
+| `dbt-postgres`    | PostgreSQL adapter for dbt        |
 
 Verify dbt is installed:
 
@@ -417,12 +417,12 @@ The pipeline expects four CSV files representing NovaTrade's source systems. You
 
 Place your CSV files in any folder on your local machine. The folder path will be configured in the next step.
 
-| File | Contents | Rows |
-|---|---|---|
-| `NTG_Sales.csv` | Transaction-level data — order date, product, store, quantity, unit price, discount, ship cost, return flag | 50,000 |
-| `NTG_Customers.csv` | Customer master — name, email, segment, loyalty tier, region, join date, channel | 8,000 |
-| `NTG_Products.csv` | Product catalogue — product name, category, sub-category, brand, cost price, tier | 327 |
-| `NTG_Stores.csv` | Store directory — store name, type, country, region, square footage, manager | 116 |
+| File                | Contents                                                                                                    | Rows   |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- | ------ |
+| `NTG_Sales.csv`     | Transaction-level data — order date, product, store, quantity, unit price, discount, ship cost, return flag | 50,000 |
+| `NTG_Customers.csv` | Customer master — name, email, segment, loyalty tier, region, join date, channel                            | 8,000  |
+| `NTG_Products.csv`  | Product catalogue — product name, category, sub-category, brand, cost price, tier                           | 327    |
+| `NTG_Stores.csv`    | Store directory — store name, type, country, region, square footage, manager                                | 116    |
 
 **Option B — Generate synthetic data**
 
@@ -449,10 +449,10 @@ Open `.env` in any text editor and fill in your values:
 
 ```ini
 # PostgreSQL connection
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=novatrade
-DB_USER=postgres
+DB_HOST=your_localhost
+DB_PORT=your_port
+DB_NAME=your_dbname
+DB_USER=your_username
 DB_PASSWORD=your_password
 
 # Path to your CSV folder from step 5
@@ -512,12 +512,12 @@ python pipeline/main.py
 
 **What happens during execution:**
 
-| Step | Operation | Output |
-|---|---|---|
-| Extract | Scans `DATA_DIR` for all `.csv` files | List of file paths |
-| Convert | Reads each CSV into a DataFrame and writes a Parquet file | `.parquet` files in `data/parquet/` |
-| Load | Reads each Parquet file and inserts rows into PostgreSQL | Tables created in `raw` schema |
-| Transform | Runs `dbt run` to build all models | Staging, intermediate, and marts schemas populated |
+| Step      | Operation                                                 | Output                                             |
+| --------- | --------------------------------------------------------- | -------------------------------------------------- |
+| Extract   | Scans `DATA_DIR` for all `.csv` files                     | List of file paths                                 |
+| Convert   | Reads each CSV into a DataFrame and writes a Parquet file | `.parquet` files in `data/parquet/`                |
+| Load      | Reads each Parquet file and inserts rows into PostgreSQL  | Tables created in `raw` schema                     |
+| Transform | Runs `dbt run` to build all models                        | Staging, intermediate, and marts schemas populated |
 
 **Expected console output:**
 
@@ -711,12 +711,12 @@ Go to **Home → Refresh** to pull the latest data from the `marts` schema into 
 
 All four report pages draw from `marts` tables:
 
-| Page | Key Metrics |
-|---|---|
-| Revenue Performance | Total revenue, gross profit, net profit by year/quarter/month |
-| Category & Region | Revenue and margin by product category, sub-category, tier, and region |
-| Customer Intelligence | Customer segmentation, loyalty tier, LTV, and channel performance |
-| Operations | Return rates, discount impact on margin, shipping cost, store performance |
+| Page                  | Key Metrics                                                               |
+| --------------------- | ------------------------------------------------------------------------- |
+| Revenue Performance   | Total revenue, gross profit, net profit by year/quarter/month             |
+| Category & Region     | Revenue and margin by product category, sub-category, tier, and region    |
+| Customer Intelligence | Customer segmentation, loyalty tier, LTV, and channel performance         |
+| Operations            | Return rates, discount impact on margin, shipping cost, store performance |
 
 > No additional data modelling or transformations are needed inside Power BI — all business logic is pre-computed in the dbt `marts` layer.
 
@@ -724,17 +724,17 @@ All four report pages draw from `marts` tables:
 
 ### Troubleshooting
 
-| Problem | Likely Cause | Solution |
-|---|---|---|
-| `psql` is not recognized | PostgreSQL not installed or not in PATH | Reinstall PostgreSQL and check "Add to PATH" during setup, or add `C:\Program Files\PostgreSQL\15\bin` to your PATH |
-| `pip` command not found | Python not in PATH | Reinstall Python and check "Add Python to PATH" during setup |
-| `dbt: command not found` | dbt not installed or venv not activated | Run `pip install dbt-core dbt-postgres` and ensure your virtual environment is activated |
-| `FileNotFoundError: DATA_DIR does not exist` | Wrong path in `.env` | Verify the folder exists and the path in `DATA_DIR` is correct (use absolute paths, forward slashes) |
-| `relation "raw.ntg_sales" does not exist` | Pipeline hasn't been run yet | Run `python pipeline/main.py` first to load data into the `raw` schema |
-| `column reference "category" is ambiguous` | Unqualified column name in model | Prefix the column with its table alias (e.g. `s.category`) |
-| `column "x" must appear in the GROUP BY clause` | Non-aggregated column in grouped query | Wrap the column in an aggregate function or add it to `GROUP BY` |
-| `dbt debug` fails with connection error | PostgreSQL not running or wrong credentials | Start the PostgreSQL service and verify credentials in `~/.dbt/profiles.yml` |
-| Power BI shows authentication popup repeatedly | Password not saved in data source settings | Go to Data source settings → Edit permissions → Save the password |
+| Problem                                         | Likely Cause                                | Solution                                                                                                            |
+| ----------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `psql` is not recognized                        | PostgreSQL not installed or not in PATH     | Reinstall PostgreSQL and check "Add to PATH" during setup, or add `C:\Program Files\PostgreSQL\15\bin` to your PATH |
+| `pip` command not found                         | Python not in PATH                          | Reinstall Python and check "Add Python to PATH" during setup                                                        |
+| `dbt: command not found`                        | dbt not installed or venv not activated     | Run `pip install dbt-core dbt-postgres` and ensure your virtual environment is activated                            |
+| `FileNotFoundError: DATA_DIR does not exist`    | Wrong path in `.env`                        | Verify the folder exists and the path in `DATA_DIR` is correct (use absolute paths, forward slashes)                |
+| `relation "raw.ntg_sales" does not exist`       | Pipeline hasn't been run yet                | Run `python pipeline/main.py` first to load data into the `raw` schema                                              |
+| `column reference "category" is ambiguous`      | Unqualified column name in model            | Prefix the column with its table alias (e.g. `s.category`)                                                          |
+| `column "x" must appear in the GROUP BY clause` | Non-aggregated column in grouped query      | Wrap the column in an aggregate function or add it to `GROUP BY`                                                    |
+| `dbt debug` fails with connection error         | PostgreSQL not running or wrong credentials | Start the PostgreSQL service and verify credentials in `~/.dbt/profiles.yml`                                        |
+| Power BI shows authentication popup repeatedly  | Password not saved in data source settings  | Go to Data source settings → Edit permissions → Save the password                                                   |
 
 ---
 
