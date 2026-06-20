@@ -19,11 +19,11 @@ Quickly move to the session you want.
 
 ## Overview
 
-This project transforms raw transactional, customer, product, store, and budget data from NovaTrade Group's three source systems into a clean, tested, analysis-ready star schema using dbt. The output feeds a Power BI reporting layer (Global Trade & Performance Dashboard) covering Revenue Performance, Category & Region, Customer Intelligence, and Operations.
+This project transforms raw transactional, customer, product, and store data from NovaTrade Group's source systems into a clean, tested, analysis-ready star schema using dbt. The output feeds a Power BI reporting layer (Global Trade & Performance Dashboard) covering Revenue Performance, Category & Region, Customer Intelligence, and Operations.
 
 NovaTrade Group is a multinational retail conglomerate operating across five regions (Europe, North America, Middle East, Africa, Asia-Pacific) and one online channel (NovaTrade Direct), selling across four categories (Electronics, Fashion, Home & Garden, Sports & Outdoors) spanning three pricing tiers (Budget, Mid-Market, Premium).
 
-Data coverage: January 2022 – December 2024 · 50,000 transactions · 8,000 customers · 327 products · 116 stores (115 physical + 1 online) · 720 monthly budget records
+Data coverage: January 2022 – December 2024 · 50,000 transactions · 8,000 customers · 327 products · 116 stores (115 physical + 1 online)
 
 ---
 
@@ -729,12 +729,13 @@ Once connected, Power BI will pull the latest data from the PostgreSQL `marts` s
 
 **Report Structure:** The Power BI dashboard (`NTG.pbix`) is organized into four analytical pages:
 
-| Page                      | Data Sources                                        | Key Insights                                                     |
-| ------------------------- | --------------------------------------------------- | ---------------------------------------------------------------- |
-| **Revenue Performance**   | `fct_revenue`, `dim_date`, `dim_revenue_monthly`    | Total revenue, gross profit, trends by year/quarter/month        |
-| **Category & Region**     | `fct_revenue`, `dim_discount_impact`, `dim_returns` | Revenue and margin by category, tier, and geography              |
-| **Customer Intelligence** | `dim_customer_revenue`, `dim_date`                  | Segmentation, loyalty, lifetime value, and channel performance   |
-| **Operations**            | `dim_returns`, `dim_discount_impact`, `fct_revenue` | Return rates, discount impact on margins, shipping cost analysis |
+| Page          | Key KPIs                                                                                                    | Key Visuals                                                                                         |
+| ------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Overview**  | Total Revenue $67.4M · GP Margin 46.7% · Return Rate 7.8% · Revenue Lost to Returns $6.1M / Discounts $8.2M | Monthly trend, revenue by region/category/channel, category margin table                            |
+| **Revenue**   | Weekday Rev $48.0M (71.5%) · Weekend Rev $19.3M (28.5%) · 2024 Rev $21.97M                                  | Monthly trend, transaction volume vs AOV, channel split by month                                    |
+| **Category**  | Revenue $22.0M · 17K transactions · 4 categories, 327 products                                              | Revenue & return rate by category, category mix shift by year                                       |
+| **Region**    | 25 countries, 6 regions · Return rate 7.8%                                                                  | Revenue by region, repeat customer rate, return rate by region, channel mix by region               |
+| **Customers** | Active customers 8K · B2C $17.0M (76%) vs B2B $5.4M (24%)                                                   | New customer acquisition, B2B vs B2C split, avg revenue/customer by region, channel by loyalty tier |
 
 All tables are live-connected to PostgreSQL, enabling real-time dashboards that reflect the latest transformed data.
 
