@@ -68,4 +68,4 @@ Five pages, persistent left-nav, Year slicer (2022/23/24) on every page: **Overv
 
 ## 5. Tech Stack
 
-dbt (staging → intermediate → marts) → Power BI Desktop. Brand colours: Navy `#1B2A4A`, Gold `#C9952A`.
+dbt (staging → intermediate → marts) → Power BI Desktop.
