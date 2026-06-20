@@ -31,6 +31,30 @@ Five pages, persistent left-nav, Year slicer (2022/23/24) on every page: **Overv
 
 ---
 
+## Dashbaords
+
+#### Overview
+
+![alt text](image.png)
+
+#### Revenue
+
+![alt text](image-1.png)
+
+#### Category
+
+![alt text](image-2.png)
+
+#### Customers
+
+![alt text](image-3.png)
+
+#### Region
+
+![alt text](image-4.png)
+
+---
+
 ## 4. Known Issues to Fix Before Board Review
 
 1. **Total Revenue "vs last year ▲48.4%"** — comparing a 3-year cumulative figure against a prior-year measure that has no valid comparison. Remove or replace with a single-year card.
