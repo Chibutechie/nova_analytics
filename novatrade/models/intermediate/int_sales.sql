@@ -22,22 +22,30 @@ select
     s.ship_cost,
     s.return_flag,
 
-    round((s.unit_price * s.quantity)::numeric, 2)                       as revenue_gross,
-    round((s.unit_price * s.quantity * (1 - s.discount::numeric))::numeric, 2) as revenue_net,
+    round((s.unit_price * s.quantity)::numeric, 2) as revenue_gross,
+    round((s.unit_price * s.quantity * (1 - s.discount::numeric))::numeric, 2)
+        as revenue_net,
 
-    round((p.cost_price * s.quantity)::numeric, 2)    as cogs,
-    round(( ((s.unit_price * (1 - s.discount::numeric)) - p.cost_price)  * s.quantity )::numeric, 2) as gross_profit,
+    round((p.cost_price * s.quantity)::numeric, 2) as cogs,
+    round(
+        (
+            ((s.unit_price * (1 - s.discount::numeric)) - p.cost_price)
+            * s.quantity
+        )::numeric,
+        2
+    ) as gross_profit,
 
     round((1::numeric - (
-    (p.cost_price * s.quantity) / 
-    nullif((s.unit_price * s.quantity * (1 - s.discount::numeric))::numeric, 0))), 4) as gross_profit_margin,
+        (p.cost_price * s.quantity)
+        / nullif((s.unit_price * s.quantity * (1 - s.discount::numeric))::numeric, 0)
+    )), 4) as gross_profit_margin,
 
     case
-        when s.discount = 0         then 'No Discount'
-        when s.discount <= 0.10     then 'Low'
-        when s.discount <= 0.25     then 'Moderate'
-        else   'Heavy'
-    end    as discount_band,
+        when s.discount = 0 then 'No Discount'
+        when s.discount <= 0.10 then 'Low'
+        when s.discount <= 0.25 then 'Moderate'
+        else 'Heavy'
+    end as discount_band,
 
     round(
         (
@@ -45,23 +53,21 @@ select
             - (s.unit_price * s.quantity * (1 - s.discount::numeric))
         )::numeric,
         2
-    )   as revenue_lost_to_discount,
+    ) as revenue_lost_to_discount,
 
-    case
-        when s.return_flag = 1 then true else false
-    end  as is_return,
+    coalesce(s.return_flag = 1, false) as is_return,
 
     case
         when s.return_flag = 1 then s.return_date - s.order_date
-    end   as days_to_return,
+    end as days_to_return,
 
-    extract(year  from s.order_date)::int   as order_year,
-    extract(month from s.order_date)::int   as order_month
+    extract(year from s.order_date)::int as order_year,
+    extract(month from s.order_date)::int as order_month
 
-from {{ ref('stg_sales') }} s
-left join {{ ref('int_products') }} p  
+from {{ ref('stg_sales') }} as s
+left join {{ ref('int_products') }} as p
     on s.product_id = p.product_id
-left join {{ ref('stg_stores') }}  st  
-    on s.store_id   = st.store_id
+left join {{ ref('stg_stores') }} as st
+    on s.store_id = st.store_id
 
 order by revenue_net desc

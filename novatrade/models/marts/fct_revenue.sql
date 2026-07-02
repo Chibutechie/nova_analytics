@@ -24,4 +24,4 @@ select
     s.is_return,
     s.days_to_return
 
-from {{ ref('int_sales') }} s
+from {{ ref('int_sales') }} as s

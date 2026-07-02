@@ -18,18 +18,17 @@ select
     s.gross_profit,
     s.days_to_return,
 
-    
-    case 
-    when s.days_to_return <= 30 then 'within_return_window'
-    else 'return_window_expired'
-end as return_window_status,
+    case
+        when s.days_to_return <= 30 then 'within_return_window'
+        else 'return_window_expired'
+    end as return_window_status,
 
-    round(s.revenue_net::numeric, 2)  as revenue_lost,
-    round(s.gross_profit::numeric, 2)  as gross_profit_lost
+    round(s.revenue_net::numeric, 2) as revenue_lost,
+    round(s.gross_profit::numeric, 2) as gross_profit_lost
 
-from {{ ref('int_sales') }} s
+from {{ ref('int_sales') }} as s
 
-left join {{ ref('int_products') }} p
+left join {{ ref('int_products') }} as p
     on s.product_id = p.product_id
 
 where s.return_flag = 1

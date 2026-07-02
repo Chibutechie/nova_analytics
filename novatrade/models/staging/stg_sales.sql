@@ -10,26 +10,22 @@ cleaned as (
         "CustomerID"::varchar as customer_id,
         "StoreID"::varchar as store_id,
         "Quantity"::numeric as quantity,
-        "UnitPrice"::numeric(10,2) as unit_price,
+        "UnitPrice"::numeric(10, 2) as unit_price,
+        "ReturnDate"::date as return_date,
+
+        "ShipCost"::numeric(10, 2) as ship_cost,
 
         case
             when "DiscountPct" > 1 then "DiscountPct" / 100.0
             else "DiscountPct"
         end as discount,
 
-        "ReturnDate"::date as return_date,
-
         case
             when "ReturnFlag" = 'Y' or "ReturnDate" is not null then 1
             else 0
         end as return_flag,
 
-        case
-            when "ReturnFlag" = 'Y' or "ReturnDate" is not null then true
-            else false
-        end as is_return,
-
-        "ShipCost"::numeric(10,2) as ship_cost
+        coalesce("ReturnFlag" = 'Y' or "ReturnDate" is not null, false) as is_return
 
     from source
     where "TransactionID" is not null
