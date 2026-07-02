@@ -3,7 +3,6 @@ __pycache__/
 pipeline/tests/
 __tests__/
 logs/
-requirements.txt
 requirements-dev.txt
 .vscode
 
