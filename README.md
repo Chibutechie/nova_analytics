@@ -61,6 +61,8 @@ nova_analytics/
 │       ├── NTG_Sales.parquet
 │       └── NTG_Stores.parquet
 │
+├── images/                              # Project images and diagrams
+│
 ├── pipeline/
 │   ├── config.py
 │   ├── convert.py
@@ -70,6 +72,9 @@ nova_analytics/
 │
 ├── novatrade/                            # dbt project root
 │   ├── dbt_project.yml                   # dbt project configuration
+│   ├── profiles.yml                      # dbt connection profile (PostgreSQL)
+│   ├── .sqlfluff                         # SQL linting configuration
+│   ├── .user.yml                         # User-specific dbt config
 │   │
 │   ├── models/
 │   │   ├── staging/                      # Source cleaning & casting
@@ -96,6 +101,7 @@ nova_analytics/
 │   │       └── dim_revenue_monthly.sql
 │   │
 │   ├── analyses/
+│   │   ├── .gitkeep
 │   │   └── customers/
 │   │       └── customer_value_distribution.sql
 │   │
@@ -108,11 +114,12 @@ nova_analytics/
 │   │   ├── customer_order_check.sql
 │   │   └── no_negative_revenue.sql
 │   │
-│   ├── seeds/
-│   └── snapshots/
+│   ├── dbt_packages/                     # Installed dbt packages
+│   ├── logs/                             # dbt execution logs
+│   ├── seeds/                            # Seed data files (if any)
+│   ├── snapshots/                        # Snapshot configs (if any)
+│   └── target/                           # dbt build artifacts & manifest
 │
-├── logs/
-│   └── dbt.log
 ├── pyproject.toml
 └── .gitignore
 ```
@@ -497,16 +504,18 @@ novatrade:
   outputs:
     dev:
       type: postgres
-      host: localhost
+      host: "{{ env_var('DB_HOST') }}"
       port: 5432
-      dbname: novatrade
-      user: postgres
-      password: your_password
-      schema: dbt_dev
+      dbname: "{{ env_var('DB_NAME') }}"
+      user: "{{ env_var('DB_USER') }}"
+      pass: "{{ env_var('DB_PASSWORD') }}"
+      schema: raw
       threads: 4
 ```
 
-> **Note:** The `schema: dbt_dev` value is used by dbt internally but the custom `generate_schema_name` macro redirects output to `staging`, `intermediate`, and `marts` schemas. Do not change this unless you also modify the macro.
+> **Note:** The profile reads connection details from your `.env` file using `env_var()` Jinja templating. This keeps credentials out of version control.
+>
+> The `schema: raw` value is used by dbt internally but the custom `generate_schema_name` macro redirects output to `staging`, `intermediate`, and `marts` schemas. Do not change this unless you also modify the macro.
 
 Verify the profile is valid:
 
