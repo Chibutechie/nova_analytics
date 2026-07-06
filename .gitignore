@@ -1,8 +1,8 @@
-.env
 __pycache__/
 pipeline/tests/
 __tests__/
 logs/
 requirements-dev.txt
-.vscode
 
+config.bat
+node_modules
